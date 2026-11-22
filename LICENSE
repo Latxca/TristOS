@@ -1,21 +1,100 @@
-MIT License
+TRISTOS PROPRIETARY SOURCE-AVAILABLE LICENSE
+Copyright (c) 2026 Aaron Sumler. All Rights Reserved.
 
-Copyright (c) 2026 Aaron Sumler
+1. SCOPE: ALL EDITIONS AND VERSIONS OF TRISTOS
+This License applies to TristOS 3.4 and all past, current, and future versions,
+editions, builds, branches, forks, and official releases of TristOS
+(collectively, "TristOS" or the "Software").
 
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:
+2. OWNERSHIP OF ORIGINAL COMPONENTS AND FEDERAL COPYRIGHT PROTECTION
+Subject to Section 3 below, all original components of TristOS authored by
+Aaron Sumler ("Copyright Holder")—including, without limitation, the TristOS
+kernel, bootloader, system architecture, user interface, custom-written Wi-Fi
+drivers, custom-written Bluetooth drivers, the built-in HTML/JavaScript web
+browser engine and interface, source code, object code, binaries, and
+documentation (collectively, the "Proprietary Components")—are the exclusive
+intellectual property of Aaron Sumler and are protected under United States
+Federal Copyright Law (Title 17 of the United States Code) and international
+copyright treaties.
 
-The above copyright notice and this permission notice shall be included in all
-copies or substantial portions of the Software.
+3. THIRD-PARTY OPEN-SOURCE COMPONENTS AND INDUSTRY STANDARDS
+(a) No Claim of Ownership Over Third-Party Open-Source Code: Aaron Sumler does
+not claim copyright ownership over any pre-existing third-party open-source
+software, libraries, headers, tools, or code snippets ("Third-Party Open-Source
+Components") that may be bundled with, linked to, or utilized by any edition of
+TristOS. All Third-Party Open-Source Components remain the property of their
+respective copyright holders and are governed strictly by their original
+open-source licenses (such as MIT, BSD, Apache-2.0, or GPL), which are
+preserved in their respective directories or notices.
+(b) Original Drivers and Browser Implementation: While wireless communication
+standards (such as IEEE 802.11 Wi-Fi and Bluetooth specifications) and web
+standards (such as HTML and JavaScript specifications) are open standards, the
+specific driver implementations, hardware abstraction layers, and built-in web
+browser code written from scratch by Aaron Sumler are original works owned
+exclusively by Aaron Sumler under Section 2.
 
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-SOFTWARE.
+4. STRICT RESERVATION OF RIGHTS (NO PERMISSION TO COPY OR MODIFY)
+Except for the limited right to view the source code publicly on GitHub solely
+for personal, non-commercial inspection and evaluation (and except as
+expressly permitted for Third-Party Open-Source Components under their own
+respective licenses), NO LICENSE OR PERMISSION IS GRANTED to copy, reproduce,
+fork for external distribution, modify, adapt, translate, merge, publish,
+distribute, sublicense, rent, lease, or sell copies of the Proprietary
+Components of TristOS, in whole or in part, without the prior express written
+permission of Aaron Sumler. Any unauthorized reproduction or distribution
+constitutes copyright infringement under 17 U.S.C. § 501.
+
+5. DISCLAIMER OF WARRANTIES (LOUISIANA & GENERAL LAW)
+TO THE MAXIMUM EXTENT PERMITTED BY APPLICABLE LAW, INCLUDING THE LAWS OF THE
+STATE OF LOUISIANA (INCLUDING LOUISIANA CIVIL CODE ARTICLES 2520 ET SEQ.
+REGARDING REDHIBITION AND IMPLIED WARRANTIES), THE SOFTWARE IS PROVIDED "AS IS"
+AND "WITH ALL FAULTS," WITHOUT WARRANTY OF ANY KIND, EXPRESS, IMPLIED, OR
+STATUTORY. AARON SUMLER EXPRESSLY DISCLAIMS ALL WARRANTIES, INCLUDING, WITHOUT
+LIMITATION, ANY IMPLIED WARRANTIES OF MERCHANTABILITY, FITNESS FOR A
+PARTICULAR PURPOSE, TITLE, NON-INFRINGEMENT, OR FREEDOM FROM REDHIBITORY
+VICES OR DEFECTS. YOU ASSUME THE ENTIRE RISK AS TO THE QUALITY, SECURITY, AND
+PERFORMANCE OF THE SOFTWARE, INCLUDING ANY RISK OF DATA LOSS, HARDWARE OR
+WIRELESS ADAPTER DAMAGE, SYSTEM CRASHES, OR SECURITY VULNERABILITIES.
+
+6. LIMITATION OF LIABILITY
+TO THE FULLEST EXTENT PERMITTED BY APPLICABLE LAW, IN NO EVENT SHALL AARON
+SUMLER BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
+CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE
+GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; HARDWARE OR RADIO FAILURE; OR
+BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING
+IN ANY WAY OUT OF THE USE OF, INABILITY TO USE, OR INSPECTION OF THIS
+SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
+7. CALIFORNIA STATUTORY NOTICE AND CLAUSE
+To the extent the laws of the State of California are ever deemed applicable
+to any user or claim:
+(a) California Civil Code Section 1542 Waiver: To the fullest extent permitted
+by law, any user accessing or interacting with the Software waives the
+provisions of California Civil Code Section 1542, which states: "A general
+release does not extend to claims that the creditor or releasing party does not
+know or suspect to exist in his or her favor at the time of executing the
+release and that, if known by him or her, would have materially affected his or
+her settlement with the debtor or released party."
+(b) California Consumer & Statutory Rights: Nothing in Sections 5 or 6 is
+intended to exclude or limit any liability that cannot be lawfully excluded or
+limited under California law (including non-waivable statutory rights under
+the California Consumers Legal Remedies Act, where applicable), and in such
+cases, liability shall be limited to the minimum extent permitted by
+California law.
+
+8. GOVERNING LAW AND VENUE (STATE OF LOUISIANA)
+Except to the extent preempted by United States Federal Copyright Law, this
+License and any dispute, claim, or controversy arising out of or relating to
+the Software or this License shall be governed by and construed in accordance
+with the laws of the State of Louisiana, without regard to its conflict of law
+principles. Any legal action or proceeding arising under this License shall be
+brought exclusively in the state or federal courts located in the State of
+Louisiana, and you hereby consent to the personal jurisdiction and venue of
+such courts.
+
+9. SEVERABILITY
+If any provision of this License is held to be invalid, illegal, or
+unenforceable under federal, Louisiana, California, or other applicable law,
+that provision shall be enforced to the maximum extent permissible, and the
+remaining provisions of this License shall remain in full force and effect.
