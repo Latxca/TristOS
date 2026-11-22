@@ -12,6 +12,7 @@ TristOS is a freestanding x86-64 hobby operating system with a BIOS boot path an
 - GNU Make
 - a freestanding-capable x86-64 C++ compiler (`g++` or `x86_64-elf-g++`)
 - GNU binutils (`ld`, `objcopy`)
+- xorriso
 - Python 3
 - QEMU (`qemu-system-x86_64`)
 
@@ -22,7 +23,7 @@ make
 make run
 ```
 
-The raw image is `build/tristos.img`.
+The bootable ISO is `build/tristos.iso`.
 
 ## Architecture
 
