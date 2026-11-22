@@ -1,0 +1,5 @@
+TRISTEXE
+VERSION=1
+TYPE=security
+ENTRY=defender
+DESCRIPTION=Trist Defender anti-virus service

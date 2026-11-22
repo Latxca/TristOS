@@ -1,0 +1,5 @@
+TRISTEXE
+VERSION=1
+TYPE=hidden-service
+ENTRY=security
+DESCRIPTION=System security and signature service

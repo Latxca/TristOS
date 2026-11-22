@@ -5,7 +5,7 @@ LD ?= ld
 OBJCOPY ?= objcopy
 CXXFLAGS := -std=c++17 -ffreestanding -fno-exceptions -fno-rtti -fno-stack-protector -fno-pie -mno-red-zone -mno-sse -mno-mmx -mno-sse2 -Wall -Wextra -Werror -Ikernel
 LDFLAGS := -nostdlib -T kernel/linker.ld
-KERNEL_OBJECTS := $(BUILD)/main.o $(BUILD)/crypto.o $(BUILD)/fs.o $(BUILD)/net.o $(BUILD)/texe.o $(BUILD)/clock.o $(BUILD)/users.o $(BUILD)/settings.o $(BUILD)/storage.o $(BUILD)/devices.o $(BUILD)/media.o $(BUILD)/hardware.o
+KERNEL_OBJECTS := $(BUILD)/main.o $(BUILD)/crypto.o $(BUILD)/fs.o $(BUILD)/net.o $(BUILD)/texe.o $(BUILD)/clock.o $(BUILD)/users.o $(BUILD)/settings.o $(BUILD)/storage.o $(BUILD)/devices.o $(BUILD)/media.o $(BUILD)/hardware.o $(BUILD)/drivers.o $(BUILD)/processes.o $(BUILD)/services.o
 
 .PHONY: all clean run
 

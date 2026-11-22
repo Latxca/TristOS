@@ -13,6 +13,14 @@ start:
     mov sp, 0x7c00
     sti
     mov [boot_drive], dl
+    mov ah, 0x02
+    int 0x16
+    mov byte [0x7bff], 0
+    xor ah, ah
+    test al, 0x03
+    jz .normal_boot
+    mov byte [0x7bff], 1
+    .normal_boot:
 
     mov si, loading_message
     call print

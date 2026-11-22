@@ -12,5 +12,6 @@ struct Header {
 };
 
 bool valid(const Header* header);
+bool supported_image(const uint8_t* image, uint64_t length);
 
 }

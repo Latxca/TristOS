@@ -1,0 +1,5 @@
+TRISTEXE
+VERSION=1
+TYPE=hidden-service
+ENTRY=eventlog
+DESCRIPTION=System event log service

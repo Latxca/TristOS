@@ -14,6 +14,8 @@ start:
     mov sp, 0x7c00
     sti
     mov [boot_drive], dl
+    cmp byte [0x7bff], 1
+    jne boot_kernel
 
     call clear_screen
     mov si, title
@@ -21,7 +23,7 @@ start:
     mov si, menu
     call print
 
-.wait_key:
+    .wait_key:
     xor ah, ah
     int 0x16
     cmp al, '1'

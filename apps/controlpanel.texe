@@ -1,0 +1,5 @@
+TRISTEXE
+VERSION=1
+TYPE=system
+ENTRY=controlpanel
+DESCRIPTION=TristOS control panel

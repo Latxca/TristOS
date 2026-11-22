@@ -1,0 +1,5 @@
+TRISTEXE
+VERSION=1
+TYPE=application
+ENTRY=pdf
+DESCRIPTION=TristOS PDF viewer
