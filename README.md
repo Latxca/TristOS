@@ -32,9 +32,11 @@ The raw image is `build/tristos.img`.
 6. `kernel/net.cpp` exposes the network-time synchronization hook used when networking is available; the RTC can otherwise be set by the user during OOBE.
 7. `kernel/crypto.cpp` provides a freestanding ChaCha20 implementation using a 256-bit key. It is a stream cipher and requires authenticated storage before being used for untrusted data.
 8. `kernel/fs.cpp` provides the initial in-memory volume and file-record layer.
-9. `kernel/main.cpp` provides the keyboard-polled command prompt and the Explorer file listing exposed by `tristexplorer.texe`.
+9. `kernel/main.cpp` provides the keyboard-polled command prompt, taskbar, and Explorer file listing exposed by `tristexplorer.texe`.
+10. `kernel/storage.cpp`, `kernel/devices.cpp`, and `kernel/media.cpp` provide installation-target selection plus service boundaries for USB, Wi-Fi, Bluetooth, video, photos, browser, and calculator applications.
+11. `kernel/hardware.cpp` detects the CPU vendor with CPUID, totals usable E820 RAM, reads BIOS EDD storage capacity when available, parses SMBIOS motherboard information, and generates a system name.
 
-The current filesystem is an **NTFS-compatible TristOS volume model**, not yet a driver for Microsoft NTFS partitions. Disk-sector I/O, journaling, and a real network-device/NTP driver are planned next; the current network module exposes the kernel-facing state and synchronization service boundary.
+The current filesystem is an **NTFS-compatible TristOS volume model**, not yet a driver for Microsoft NTFS partitions. Disk-sector I/O, journaling, partition installation, and real USB, Wi-Fi, Bluetooth, video, and network-device/NTP drivers are planned next. The current modules expose the kernel-facing service boundaries and report which hardware backends are unavailable.
 
 ## `.texe` applications
 
@@ -44,5 +46,10 @@ TristOS uses `.texe` as its application extension. The initial metadata format i
 - `apps/tristexplorer.texe` — shell and window-manager app
 - `apps/netd.texe` — background networking service
 - `apps/userinit.texe` — first-boot user setup service
+- `apps/settings.texe` — settings and password manager
+- `apps/webbrowser.texe` — web browser service
+- `apps/calculator.texe` — calculator service
+- `apps/photos.texe` — photo viewer service
+- `apps/videos.texe` — video service
 
-The kernel currently registers these applications as built-in services so the image remains small and freestanding. On first boot, `userinit.texe` requires a user-created username, display name, and date/time in `HH:MM:SS DD/MM/YY` format. The built-in administrator record is hidden and disabled by default. New accounts join `users`; administrative accounts use `admins`, which grants user-management and write permissions. The command prompt supports `help`, `dir`, `explorer`, `time`, `ver`, and `exit`. A disk-backed `.texe` loader and persistent user database can be added once filesystem block I/O exists.
+The kernel currently registers these applications as built-in services so the image remains small and freestanding. OOBE asks whether data should remain on the external boot device or target an internal SSD/HDD. The taskbar exposes Start, Explorer, Command Prompt, and Settings. On first boot, `userinit.texe` requires a user-created username, display name, password, and date/time in `HH:MM:SS DD/MM/YY` format. The built-in administrator record is hidden and disabled by default. The OOBE-created account is an administrator in `admins`; additional accounts can join `users`, which has read/execute permissions. The `admins` group grants read, write, execute, and user-management permissions. The command prompt supports `help`, `dir`, `explorer`, `settings`, `password`, `devices`, `taskmgr`, `browser`, `calc`, `photos`, `videos`, `time`, `ver`, and `exit`. `taskmgr` shows the built-in process list and hardware information. A disk-backed `.texe` loader and persistent user database can be added once filesystem block I/O exists.

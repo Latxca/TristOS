@@ -4,15 +4,26 @@
 #include "net.hpp"
 #include "clock.hpp"
 #include "users.hpp"
+#include "settings.hpp"
+#include "devices.hpp"
+#include "media.hpp"
+#include "hardware.hpp"
 
 namespace trist {
 
 static volatile uint16_t* const video = reinterpret_cast<volatile uint16_t*>(0xb8000);
 static uint32_t cursor;
 
+static void taskbar_render() {
+    const char* bar = " Start | Explorer | Command Prompt | Settings ";
+    for (uint32_t i = 0; i < 80; ++i) video[24 * 80 + i] = 0x1720;
+    for (uint32_t i = 0; bar[i] != 0 && i < 80; ++i) video[24 * 80 + i] = static_cast<uint16_t>(0x1720 | static_cast<uint8_t>(bar[i]));
+}
+
 void console_init() {
     cursor = 0;
     for (uint32_t i = 0; i < 80 * 25; ++i) video[i] = 0x0720;
+    taskbar_render();
 }
 
 void console_write(const char* text) {
@@ -61,29 +72,31 @@ static char key_for_scan(uint8_t scan, bool shift) {
     return 0;
 }
 
-void console_read_line(char* buffer, uint32_t capacity) {
+void console_read_line(char* buffer, uint32_t capacity, bool echo) {
     uint32_t length = 0;
     bool shift = false;
     for (;;) {
         clock::update_screen();
+        taskbar_render();
         uint8_t scan = keyboard_read();
         if (scan == 0x2a || scan == 0x36) { shift = true; continue; }
         if (scan == 0xaa || scan == 0xb6) { shift = false; continue; }
         if (scan & 0x80) continue;
         if (scan == 0x1c) {
             buffer[length] = 0;
-            console_write_line("");
+            if (echo) console_write_line("");
+            else console_write_line("");
             return;
         }
         if (scan == 0x0e) {
-            if (length != 0) { --length; console_write("\\b \\b"); }
+            if (length != 0) { --length; if (echo) console_write("\\b \\b"); }
             continue;
         }
         char key = key_for_scan(scan, shift);
         if (key != 0 && length + 1 < capacity) {
             buffer[length++] = key;
             char output[2] = {key, 0};
-            console_write(output);
+            if (echo) console_write(output);
         }
     }
 }
@@ -104,7 +117,14 @@ void explorer() {
     console_write_line("  /system/tristexplorer.texe [shell + file explorer]");
     console_write_line("  /system/netd.texe          [background app]");
     console_write_line("  /Users/Trist               [user profile]");
+    console_write_line("  /system/settings.texe     [settings]");
+    console_write_line("  /apps/webbrowser.texe     [browser]");
+    console_write_line("  /apps/calculator.texe     [calculator]");
+    console_write_line("  /apps/photos.texe         [photo viewer]");
+    console_write_line("  /apps/videos.texe         [video player]");
 }
+
+static hardware::SystemInfo system_info;
 
 void command_prompt() {
     console_write_line("Command Prompt (tristcmd) - type help for commands");
@@ -113,11 +133,27 @@ void command_prompt() {
         console_write("C:\\> ");
         console_read_line(command, sizeof(command));
         if (command_is(command, "help")) {
-            console_write_line("help  dir  explorer  time  ver  exit");
+            console_write_line("help  dir  explorer  settings  password  devices  taskmgr  browser  calc  photos  videos  time  ver  exit");
         } else if (command_is(command, "dir")) {
             explorer();
         } else if (command_is(command, "explorer")) {
             explorer();
+        } else if (command_is(command, "settings")) {
+            settings_app();
+        } else if (command_is(command, "password")) {
+            change_password();
+        } else if (command_is(command, "devices")) {
+            console_write_line("Use Settings > Devices when hardware drivers are available.");
+        } else if (command_is(command, "taskmgr")) {
+            hardware::task_manager(&system_info);
+        } else if (command_is(command, "browser")) {
+            media::browser();
+        } else if (command_is(command, "calc")) {
+            media::calculator();
+        } else if (command_is(command, "photos")) {
+            media::photos();
+        } else if (command_is(command, "videos")) {
+            media::videos();
         } else if (command_is(command, "time")) {
             console_write_line("The system clock is shown in the top-right corner.");
         } else if (command_is(command, "ver")) {
@@ -143,8 +179,20 @@ extern "C" void _start() {
     fs::create(&volume, "tristexplorer.texe", 1, false);
     fs::create(&volume, "netd.texe", 1, false);
     fs::create(&volume, "userinit.texe", 1, true);
+    fs::create(&volume, "settings.texe", 1, true);
+    fs::create(&volume, "webbrowser.texe", 1, false);
+    fs::create(&volume, "calculator.texe", 1, false);
+    fs::create(&volume, "photos.texe", 1, false);
+    fs::create(&volume, "videos.texe", 1, false);
     console_write_line("NTFS-compatible volume mounted");
     console_write_line("ChaCha20-256 encrypted file support enabled");
+
+    hardware::detect(&system_info);
+    hardware::show(&system_info);
+
+    static devices::DeviceState devices;
+    devices::initialize(&devices);
+    devices::show_status(&devices);
 
     static net::NetworkState network;
     net::initialize(&network);
@@ -155,6 +203,8 @@ extern "C" void _start() {
     static users::UserDatabase user_database;
     users::initialize(&user_database);
     if (users::first_boot(&user_database)) users::run_oobe(&user_database);
+    users::User* active_user = &user_database.accounts[1];
+    set_active_user(active_user);
     users::show_accounts(&user_database);
     users::show_groups();
 

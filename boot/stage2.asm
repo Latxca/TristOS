@@ -57,6 +57,8 @@ boot_kernel:
     int 0x13
     jc disk_error
 
+    call collect_memory_map
+    call collect_disk_info
     call enter_long_mode
 
 halt_system:
@@ -66,6 +68,36 @@ halt_system:
 .hang:
     hlt
     jmp .hang
+
+collect_memory_map:
+    xor ax, ax
+    mov es, ax
+    mov di, 0x7002
+    xor ebx, ebx
+    xor bp, bp
+.next:
+    mov eax, 0xe820
+    mov edx, 0x534d4150
+    mov ecx, 24
+    int 0x15
+    jc .done
+    cmp eax, 0x534d4150
+    jne .done
+    inc bp
+    add di, 24
+    test ebx, ebx
+    jnz .next
+.done:
+    mov [0x7000], bp
+    ret
+
+collect_disk_info:
+    mov word [0x7300], 0x001e
+    mov si, 0x7300
+    mov dl, [boot_drive]
+    mov ah, 0x48
+    int 0x13
+    ret
 
 disk_error:
     mov si, disk_error_message
