@@ -122,3 +122,14 @@ private:
 };
 
 } // namespace tristos::proc
+
+namespace tristos::texe {
+struct LoadedImage;
+}
+
+Pcb* create_process_from_texe(ProcessTable* table,
+                              const tristos::texe::LoadedImage& image,
+                              uint32_t ppid,
+                              uint32_t uid,
+                              uint32_t gid,
+                              uint64_t cr3_phys = 0);
