@@ -1,6 +1,6 @@
 # TristOS
 
-**TristOS 3.4** — Copyright Aaron Sumler 2026 — released under the TristOS Proprietary Source-Available License. See [`LICENSE`](LICENSE).
+**TristOS 3.6** — Copyright Aaron Sumler 2026 — released under the TristOS Proprietary Source-Available License. See [`LICENSE`](LICENSE).
 
 TristOS is a freestanding x86-64 hobby operating system with a BIOS boot path and a C++17 kernel.
 
