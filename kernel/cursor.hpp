@@ -192,3 +192,8 @@ const char* status_to_string(Status status) {
 }
 
 } // namespace tristos::cursor
+
+#include "fs.hpp"
+...
+Status load_from_volume(trist::fs::Volume* vol, const char* path, ParsedCursor* out_cursor);
+void release_cursor(ParsedCursor* cursor);
