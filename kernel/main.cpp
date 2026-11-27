@@ -1,6 +1,7 @@
 #include "kernel.hpp"
 #include "crypto.hpp"
 #include "fs.hpp"
+#include "storage.hpp"
 #include "net.hpp"
 #include "clock.hpp"
 #include "users.hpp"
@@ -17,6 +18,14 @@ namespace trist {
 
 static volatile uint16_t* const video = reinterpret_cast<volatile uint16_t*>(0xb8000);
 static uint32_t cursor;
+static bool ctrl_down;
+static bool alt_down;
+
+static uint8_t g_ramdisk_backing[64 * 1024] __attribute__((aligned(4096)));
+static uint8_t g_ro_disk_backing[4096] __attribute__((aligned(4096)));
+
+static void security_menu();
+void lock_screen();
 
 static void taskbar_render() {
     const char* bar = " Start | Explorer | Command Prompt | Settings ";
@@ -51,6 +60,87 @@ void console_write_hex(uint64_t value) {
     console_write(output);
 }
 
+static bool bytes_equal(const void* a, const void* b, uint32_t len) {
+    const auto* pa = static_cast<const uint8_t*>(a);
+    const auto* pb = static_cast<const uint8_t*>(b);
+    for (uint32_t i = 0; i < len; ++i) {
+        if (pa[i] != pb[i]) return false;
+    }
+    return true;
+}
+
+static void storage_selftest() {
+    using namespace tristos::storage;
+
+    Status st = init();
+    if (st != Status::Ok) {
+        console_write("storage: init failed: ");
+        console_write_line(status_to_string(st));
+        return;
+    }
+
+    RamDiskConfig cfg{};
+    cfg.name = "ram0";
+    cfg.buffer = g_ramdisk_backing;
+    cfg.buffer_size = sizeof(g_ramdisk_backing);
+    cfg.block_size = kDefaultSectorSize;
+    cfg.flags = DeviceFlags::None;
+
+    BlockDevice* dev = nullptr;
+    uint32_t dev_id = 0;
+    st = create_ram_disk(cfg, &dev);
+    if (st != Status::Ok || dev == nullptr) {
+        console_write("storage: create_ram_disk failed: ");
+        console_write_line(status_to_string(st));
+        return;
+    }
+
+    st = register_device(dev, &dev_id);
+    if (st != Status::Ok) {
+        console_write("storage: register_device failed: ");
+        console_write_line(status_to_string(st));
+        destroy_ram_disk(dev);
+        return;
+    }
+
+    constexpr uint64_t kTestOffset = 300;
+    constexpr uint32_t kPatternLen = 500;
+    uint8_t write_buf[kPatternLen];
+    uint8_t read_buf[kPatternLen];
+
+    for (uint32_t i = 0; i < kPatternLen; ++i) {
+        write_buf[i] = static_cast<uint8_t>((i * 13 + 7) & 0xFF);
+        read_buf[i] = 0;
+    }
+
+    if (dev->write_bytes(kTestOffset, kPatternLen, write_buf) != Status::Ok ||
+        dev->read_bytes(kTestOffset, kPatternLen, read_buf) != Status::Ok ||
+        !bytes_equal(write_buf, read_buf, kPatternLen)) {
+        console_write_line("storage: ram0 read/write selftest FAILED");
+        return;
+    }
+
+    RamDiskConfig ro_cfg{};
+    ro_cfg.name = "ram_ro";
+    ro_cfg.buffer = g_ro_disk_backing;
+    ro_cfg.buffer_size = sizeof(g_ro_disk_backing);
+    ro_cfg.block_size = kDefaultSectorSize;
+    ro_cfg.flags = DeviceFlags::ReadOnly;
+
+    BlockDevice* ro_dev = nullptr;
+    if (create_ram_disk(ro_cfg, &ro_dev) == Status::Ok && ro_dev != nullptr) {
+        const uint8_t probe = 0xAA;
+        if (ro_dev->write_bytes(0, 1, &probe) != Status::ReadOnly) {
+            console_write_line("storage: read-only check FAILED");
+            destroy_ram_disk(ro_dev);
+            return;
+        }
+        destroy_ram_disk(ro_dev);
+    }
+
+    console_write_line("storage: ram0 registered and selftest PASSED");
+}
+
 static uint8_t keyboard_read() {
     uint8_t status;
     do { asm volatile("inb %1, %0" : "=a"(status) : "Nd"(static_cast<uint16_t>(0x64))); } while ((status & 1) == 0);
@@ -76,7 +166,7 @@ static char key_for_scan(uint8_t scan, bool shift) {
     return 0;
 }
 
-void console_read_line(char* buffer, uint32_t capacity, bool echo) {
+void console_read_line(char* buffer, uint32_t capacity, bool echo = true) {
     uint32_t length = 0;
     bool shift = false;
     for (;;) {
@@ -93,12 +183,11 @@ void console_read_line(char* buffer, uint32_t capacity, bool echo) {
         if (scan & 0x80) continue;
         if (scan == 0x1c) {
             buffer[length] = 0;
-            if (echo) console_write_line("");
-            else console_write_line("");
+            console_write_line("");
             return;
         }
         if (scan == 0x0e) {
-            if (length != 0) { --length; if (echo) console_write("\\b \\b"); }
+            if (length != 0) { --length; if (echo) console_write("\b \b"); }
             continue;
         }
         char key = key_for_scan(scan, shift);
@@ -150,11 +239,7 @@ void explorer() {
 static hardware::SystemInfo system_info;
 static processes::Table process_table;
 static services::SecurityState service_state;
-static bool ctrl_down;
-static bool alt_down;
 
-static void security_menu();
-void lock_screen();
 void command_prompt() {
     console_write_line("Command Prompt (tristcmd) - type help for commands");
     char command[64];
@@ -213,6 +298,8 @@ extern "C" void _start() {
     console_write_line("C++ kernel online - MIT licensed");
     console_write_line(version::kCopyright);
     console_write_line("Executable format: .texe / version 1");
+
+    storage_selftest();
 
     static fs::Volume volume;
     fs::format(&volume);
@@ -292,4 +379,4 @@ extern "C" void _start() {
     }
 }
 
-}
+} // namespace trist
